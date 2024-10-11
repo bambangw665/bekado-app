@@ -1,0 +1,55 @@
+name: bekado
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+2
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  google_fonts:
+  firebase_core:
+  firebase_auth:
+  firebase_database:
+  cloud_firestore:
+  flutter_bloc:
+  equatable:
+  get_it:
+  dartz:
+  flutter_svg:
+  flutter_screenutil:
+  simple_shadow:
+  form_validator:
+  font_awesome_flutter:
+  image_picker:
+  lottie:
+  shimmer:
+  flutter_secure_storage:
+  flutter_dotenv:
+  clipboard:
+  bottom_bar:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icon/
+    - assets/svg/
+    - assets/svg/nav/
+    - assets/animation/
+    - .env
+
