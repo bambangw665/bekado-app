@@ -1,25 +1,39 @@
 import 'package:bekado/presentation/bloc/authentication/auth_bloc.dart';
 import 'package:bekado/presentation/bloc/navigation_bloc.dart';
-import 'package:bekado/presentation/widgets/authentification/login/login_form_widgets.dart';
+import 'package:bekado/presentation/widgets/authentification/register/register_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../widgets/authentification/login/login_googleLogin_widgets.dart';
-import '../../widgets/authentification/login/logo_center_widgets.dart';
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmationController =
+      TextEditingController();
 
-  void onSignIn() {
+  void onSignUp() {
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Nama tidak boleh kosong!")),
+      );
+
+      return;
+    }
+    if (_phoneController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email tidak boleh kosong!")),
+      );
+
+      return;
+    }
     if (_emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Email tidak boleh kosong!")),
@@ -34,9 +48,21 @@ class _LoginPageState extends State<LoginPage> {
 
       return;
     }
+    if (_passwordConfirmationController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Konfirmasi Password tidak boleh kosong!")),
+      );
 
-    context.read<AuthBloc>().add(SignInEvent(
-        email: _emailController.text, password: _passwordController.text));
+      return;
+    }
+
+    context.read<AuthBloc>().add(SignUpEvent(
+          name: _nameController.text,
+          phone: _phoneController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          profilePic: '',
+        ));
   }
 
   @override
@@ -47,20 +73,16 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: 30.sp,
-              ),
-              Logo_center(),
               BlocListener<AuthBloc, AuthState>(
                 listener: (context, state) {
-                  if (state is AuthSuccess) {
+                  if (state is SignUpSuccess) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Berhasil login")),
+                      SnackBar(content: Text("Berhasil membuat akun")),
                     );
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (_) => BottomMainNavbar()));
-                  } else if (state is AuthLoading) {
+                  } else if (state is SignUpLoading) {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -81,22 +103,25 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     );
-                  } else if (state is AuthFailure) {
+                  } else if (state is SignUpFailure) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
                     );
                   }
                 },
-                child: LoginForm(
+                child: RegisterForm(
+                  nameController: _nameController,
+                  phoneController: _phoneController,
                   emailController: _emailController,
                   passwordController: _passwordController,
-                  onPressLogin: () {
-                    onSignIn();
+                  passwordConfirmationController:
+                      _passwordConfirmationController,
+                  onPressRegister: () {
+                    onSignUp();
                   },
                 ),
-              ),
-              BtnGooleSignIn(),
+              )
             ],
           ),
         ),
